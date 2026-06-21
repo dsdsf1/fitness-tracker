@@ -25,9 +25,12 @@ jobs:
       - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Initialize & Build TWA
+      - name: Initialize TWA
         run: |
-          printf 'N\ncom.fitness.tracker\n囚徒健身\n\n\n\n\n\n\n' | bubblewrap init --manifest "https://dsdsf1.github.io/fitness-tracker/workout_manifest.json" --directory twa
+          printf 'Y\ncom.fitness.tracker\n囚徒健身\n\n\n\n\n\n\n' | bubblewrap init --manifest "https://dsdsf1.github.io/fitness-tracker/workout_manifest.json" --directory twa
+
+      - name: Build APK
+        run: |
           cd twa
           bubblewrap build
 
