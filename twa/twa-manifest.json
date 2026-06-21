@@ -1,0 +1,40 @@
+{
+  "packageId": "com.fitness.tracker",
+  "host": "dsdsf1.github.io",
+  "name": "囚徒健身",
+  "launcherName": "囚徒健身",
+  "display": "standalone",
+  "themeColor": "#1a1a2e",
+  "navigationColor": "#0f0f1a",
+  "backgroundColor": "#0f0f1a",
+  "startUrl": "/fitness-tracker/",
+  "iconUrl": "https://dsdsf1.github.io/fitness-tracker/workout_icon_512.png",
+  "maskableIconUrl": "https://dsdsf1.github.io/fitness-tracker/workout_icon_512.png",
+  "monochromeIconUrl": "https://dsdsf1.github.io/fitness-tracker/workout_icon_512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "fitness-tracker"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://dsdsf1.github.io/fitness-tracker/workout_manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": {
+      "enabled": false
+    },
+    "locationDelegation": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "orientation": "portrait",
+  "fullScope": false
+}
