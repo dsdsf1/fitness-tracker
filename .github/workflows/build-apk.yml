@@ -9,37 +9,13 @@ jobs:
   build-apk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: 11076708
-
-      - name: Install Bubblewrap
-        run: npm install -g @bubblewrap/cli
-
-      - name: Initialize TWA
+      - name: Build APK via PWA Builder
         run: |
-          printf 'Y\ncom.fitness.tracker\n囚徒健身\n\n\n\n\n\n\n' | bubblewrap init --manifest "https://dsdsf1.github.io/fitness-tracker/workout_manifest.json" --directory twa
-
-      - name: Build APK
-        run: |
-          cd twa
-          bubblewrap build
+          npm install -g @pwabuilder/cli
+          pwabuilder package --url "https://dsdsf1.github.io/fitness-tracker/" --platform android --output ./apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: 囚徒健身-APK
-          path: |
-            twa/app/build/outputs/apk/release/*.apk
-            twa/app/build/outputs/apk/debug/*.apk
-            twa/*.apk
-            twa/**/*.apk
+          path: ./apk/*.apk
