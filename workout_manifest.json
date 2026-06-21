@@ -1,0 +1,22 @@
+{
+  "name": "囚徒健身 · 增肌塑形计划",
+  "short_name": "囚徒健身",
+  "description": "男·18岁·173cm·60kg — 囚徒健身优化版训练计划",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0b14",
+  "theme_color": "#0b0b14",
+  "icons": [
+    {
+      "src": "workout_icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "workout_icon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

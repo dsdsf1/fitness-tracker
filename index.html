@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="居家训练">
+<link rel="manifest" href="workout_manifest.json">
+<title>🏋️ 居家增肌塑形 · 体态矫正 · 完整训练计划</title>
+<style>
+:root {
+    --bg:#0f0f1a; --card:#1a1a2e; --card2:#16213e; --gold:#e2b04a; --gold2:#c9952e;
+    --green:#4caf84; --red:#e0556a; --blue:#5b9bd5; --purple:#b07cd8; --orange:#e8844a;
+    --text:#e8e6e3; --muted:#9a9a9a; --border:#2a2a3e;
+    --push:#e0556a; --pull:#5b9bd5; --legs:#4caf84; --posture:#b07cd8; --rest:#666;
+    --warmup:#e8844a;
+    --touch-target: 44px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+/* 移动端安全区域 */
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);padding:clamp(12px,3vw,18px) clamp(12px,3vw,20px);text-align:center;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+header h1{font-size:clamp(1.1em,3vw,1.5em);color:var(--gold)}
+header p{font-size:clamp(0.72em,2vw,0.85em);color:var(--muted);margin-top:2px}
+/* 导航 - 触摸优化 */
+nav#weekNav{display:flex;gap:2px;padding:clamp(6px,2vw,10px);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex-wrap:wrap;justify-content:center}
+nav#weekNav::-webkit-scrollbar{display:none}
+nav#weekNav button{min-width:clamp(38px,10vw,56px);min-height:var(--touch-target);padding:clamp(4px,1.5vw,8px) clamp(4px,1.5vw,8px);border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;cursor:pointer;font-size:clamp(0.7em,2vw,0.85em);white-space:nowrap;transition:all .2s;flex-shrink:0;touch-action:manipulation}
+nav#weekNav button.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
+nav#weekNav button.rest{color:var(--muted);opacity:.5;cursor:default}
+nav#weekNav button:not(.rest):active{transform:scale(.95)}
+/* 主标签切换 - 触摸优化 */
+nav#kbNav{display:flex;gap:2px;padding:clamp(4px,1.5vw,8px);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex-wrap:wrap;justify-content:center}
+nav#kbNav button{min-height:var(--touch-target);padding:clamp(6px,2vw,10px) clamp(10px,3vw,16px);border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;cursor:pointer;font-size:clamp(0.72em,2vw,0.85em);white-space:nowrap;transition:all .2s;flex-shrink:0;touch-action:manipulation}
+nav#kbNav button.active{background:var(--card2);border-color:var(--gold);color:var(--gold);font-weight:700}
+nav#kbNav button:active{transform:scale(.95)}
+#content{max-width:800px;margin:0 auto;padding:clamp(8px,2vw,16px)}
+.section{background:var(--card);border-radius:12px;padding:clamp(12px,3vw,20px);margin-bottom:clamp(10px,2vw,16px);border:1px solid var(--border)}
+.section h2{font-size:clamp(0.95em,2.5vw,1.15em);margin-bottom:clamp(8px,2vw,12px);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{display:inline-block;padding:clamp(2px,1vw,4px) clamp(6px,2vw,10px);border-radius:20px;font-size:clamp(0.65em,1.8vw,0.75em);font-weight:700;white-space:nowrap}
+.b-push{background:var(--push);color:#fff}.b-pull{background:var(--pull);color:#fff}.b-legs{background:var(--legs);color:#fff}.b-posture{background:var(--purple);color:#fff}.b-warmup{background:var(--warmup);color:#fff}.b-gold{background:var(--gold);color:#000}.b-info{background:var(--blue);color:#fff}.b-injury{background:var(--red);color:#fff}.b-dorm{background:var(--green);color:#fff}
+.day-label{font-size:clamp(0.75em,2vw,0.88em);color:var(--muted);margin-bottom:clamp(8px,2vw,12px)}
+/* 练习列表 - 触摸优化 */
+.exercise-list{list-style:none}
+.exercise-item{display:flex;align-items:center;padding:clamp(8px,2vw,12px);margin:clamp(3px,1vw,6px) 0;background:var(--card2);border-radius:8px;cursor:pointer;min-height:var(--touch-target);gap:clamp(8px,2vw,12px);transition:all .2s;touch-action:manipulation;border:1px solid transparent;flex-wrap:wrap}
+.exercise-item:hover{border-color:#333}
+.exercise-item:active{transform:scale(.98)}
+.exercise-item.done{opacity:.45;text-decoration:line-through;text-decoration-color:var(--muted)}
+.ex-left{display:flex;align-items:center;gap:clamp(6px,1.5vw,10px);flex:0 0 auto}
+.ex-check{width:clamp(22px,5vw,26px);height:clamp(22px,5vw,26px);border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:clamp(0.7em,1.8vw,0.85em);transition:all .2s;flex-shrink:0}
+.exercise-item.done .ex-check{background:var(--green);border-color:var(--green);color:#fff}
+.ex-name{font-weight:600;font-size:clamp(0.82em,2.2vw,0.95em);white-space:nowrap}
+.ex-info{font-size:clamp(0.68em,1.8vw,0.78em);color:var(--muted);flex:1;min-width:0;text-align:right}
+/* 提示框 */
+.tip-box{padding:clamp(10px,2vw,14px);border-radius:8px;margin:clamp(8px,2vw,12px) 0;font-size:clamp(0.72em,1.8vw,0.85em);line-height:1.6}
+.tip-box.good{background:rgba(76,175,132,.12);border-left:3px solid var(--green)}
+.tip-box.warn{background:rgba(224,85,106,.12);border-left:3px solid var(--red)}
+.tip-box.info{background:rgba(91,155,213,.12);border-left:3px solid var(--blue)}
+.tip-box.dorm{background:rgba(76,175,132,.08);border-left:3px solid var(--green)}
+.tip-box.injury{background:rgba(224,85,106,.08);border-left:3px solid var(--red)}
+/* 知识卡片 */
+.kb-card{background:var(--card2);padding:clamp(12px,3vw,18px);border-radius:8px;margin:clamp(8px,2vw,12px) 0;border:1px solid var(--border)}
+.kb-card h4{color:var(--gold);margin-bottom:6px;font-size:clamp(0.85em,2.2vw,1em)}
+.kb-card ul,.kb-card ol{padding-left:clamp(16px,4vw,24px)}
+.kb-card li{margin:4px 0;font-size:clamp(0.72em,1.8vw,0.85em)}
+.highlight{background:rgba(226,176,74,.2);padding:1px 5px;border-radius:3px;color:var(--gold);font-weight:600}
+.kf{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.85em;margin:2px;background:rgba(76,175,132,.15);color:var(--green)}
+.kf-bad{background:rgba(224,85,106,.15);color:var(--red)}
+details{margin:clamp(6px,1.5vw,10px) 0;background:var(--card2);border-radius:8px;overflow:hidden}
+details summary{padding:clamp(10px,2.5vw,14px);cursor:pointer;font-size:clamp(0.8em,2vw,0.9em);touch-action:manipulation;min-height:var(--touch-target);display:flex;align-items:center;user-select:none}
+details .inner{padding:clamp(8px,2vw,16px);font-size:clamp(0.72em,1.8vw,0.82em);line-height:1.75;border-top:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:clamp(0.68em,1.7vw,0.8em);overflow-x:auto;display:block}
+th,td{padding:clamp(6px,1.5vw,10px);border:1px solid var(--border);text-align:left}
+th{background:var(--card2);color:var(--gold);white-space:nowrap}
+/* 按钮 */
+.btn{display:inline-block;padding:clamp(8px,2vw,12px) clamp(16px,4vw,24px);background:var(--red);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:clamp(0.75em,2vw,0.88em);min-height:var(--touch-target);touch-action:manipulation}
+/* section高亮边界 */
+.section.injury-section{border-left:3px solid var(--red)}
+.section.dorm-section{border-left:3px solid var(--green)}
+/* 响应式表格 */
+@media screen and (max-width:480px){
+    table{font-size:0.72em}
+    .ex-info{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .exercise-item{gap:6px}
+    header h1{font-size:1.05em}
+}
+@media screen and (min-width:768px){
+    #content{max-width:820px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🏋️ 居家增肌塑形 · 体态矫正 · 完整训练计划</h1>
+<p>173cm · 60kg · 18岁男性｜宿舍/居家训练｜圆肩驼背头前伸矫正｜胸肌激活专属方案</p>
+</header>
+
+<nav id="weekNav"></nav>
+<nav id="kbNav">
+    <button data-tab="training" class="active">📋 每日训练</button>
+    <button data-tab="dorm">🏠 宿舍动作</button>
+    <button data-tab="injury">🩹 肩伤康复</button>
+    <button data-tab="qa">❓ 35问</button>
+    <button data-tab="terms">📖 术语</button>
+    <button data-tab="guide">📘 指南</button>
+</nav>
+
+<div id="content"></div>
+
+<script>
+// ======================== DATA ========================
+const DAYS=['周一 推力日','周二 拉力日','周三 腿+核心','周四 推力日','周五 拉力日','周六 体态矫正','☀️ 周日 休息'];
+
+// 统一热身
+const WARMUP_BASE=[
+    {name:'肩绕环 ×20',info:'正向10次+反向10次',tip:'手臂画大圈，感受肩关节全方位活动'},
+    {name:'俯身肩胛收缩 2×15',info:'俯身45°，肩胛骨往中间夹',tip:'只用肩胛骨发力，手臂不动。想象后背夹住一枚硬币'},
+    {name:'墙天使 2×12',info:'背靠墙，手臂贴墙做W→上举',tip:'全程手腕+手肘+肩膀贴墙。这既是热身也是对圆肩的矫正'},
+    {name:'下巴回收 2×10',info:'头中立→下巴水平后移，像缩头',tip:'不是低头！下巴水平后移，感觉喉咙后方深层发力'},
+];
+
+// 周三腿日额外热身
+const WARMUP_LEG=[
+    {name:'原地慢跑 1分钟',info:'轻度，不跳太高',tip:'目的是升温，不是冲刺'},
+    {name:'髋关节转圈 10圈',info:'手扶墙/桌，抬腿画圈',tip:'画圈越大越好，感受髋关节润滑'},
+    {name:'动态弓步 10次',info:'前腿弓步→后腿膝盖接近地面→交替',tip:'上身保持直立，不往前倾'},
+    {name:'空气深蹲 15次',info:'无负重，标准深蹲',tip:'手前平举保持平衡，感受臀部往后坐'},
+    {name:'直腿踢腿 10次/腿',info:'站姿，直腿前踢',tip:'激活腘绳肌和后链'},
+];
+
+// 胸肌激活（推力日练前必做）
+const CHEST_ACTIVATE=[
+    {name:'双手互推（等长收缩）3×10秒',info:'双手在胸前合十→用力互推→感受胸肌收紧',tip:'手掌互推时想象"把胸肌往中间挤压"。10秒全力推，然后放松5秒'},
+    {name:'门框/墙角胸肌轻拉伸 2×20秒',info:'手臂弯曲90°放门框→身体前移→胸肌轻微拉伸感',tip:'不痛，只到有轻微拉扯感的位置。拉伸后做俯卧撑胸感更好'},
+    {name:'俯卧撑预备位保持 2×15秒',info:'俯卧撑起始位→肩胛下沉+后缩→保持身体直线',tip:'这是"静态激活"——让身体提前记住正确姿势'},
+];
+
+// ======================== 训练日计划 ========================
+const PLANS={
+    0:{ // 周一 推力日
+        dayLabel:'推力日 · 胸 + 肩（前/中束）',
+        badge:'b-push',badgeText:'推力',
+        chestActivate:true,
+        exercises:[
+            {name:'靠墙俯卧撑 4×15',info:'手比肩宽·3-1-1节奏·夹胸',tip:'手距=1.5倍肩宽 | 肘45°朝外 | 慢下3秒 | 推到顶时"夹胸" | 身体越直立越简单',feel:'胸大肌中部（乳沟两侧区域）有轻微拉伸-收缩感。如果三头肌酸>胸肌酸→手往宽放、慢下来、先做激活'},
+            {name:'跪式俯卧撑 4×10',info:'手比肩宽·3-1-1·底部停1秒',tip:'核心收紧不塌腰 | 手位置：胸口正下方略偏外 | 推到顶时想象"胸肌往中间挤" | 肩胛骨在底部往中间收',feel:'下放时胸肌有明显拉伸感（像橡皮筋被拉开），推起时胸肌酸胀发热。正确发力时胸比三头先累'},
+            {name:'前推式俯卧撑 3×8',info:'肩略超手掌·练前锯肌+上胸',tip:'身体整体前移2-3cm→肩超过手掌→推。前移不塌腰！',feel:'腋下侧方（前锯肌区域）酸胀，上胸锁骨下方有发力感。这是对抗圆肩的关键肌肉'},
+            {name:'靠墙单边推 3×10/侧',info:'侧身单手推墙·孤立单侧胸肌',tip:'身体侧面朝墙→单手推→身体不旋转！',feel:'单侧胸肌孤立发力，核心抗旋收紧。如果身体转动=核心没收紧'},
+        ],
+        tips:[
+            {type:'good',text:'<strong>✅ 推力日核心：</strong>慢速离心(3秒)、手比肩宽、夹胸意识。如果胸没感觉→重新做胸肌激活再开始。质量>数量。'},
+            {type:'warn',text:'<strong>⚠️ 肩伤注意：</strong>如果你左肩仍有不适，靠墙俯卧撑和靠墙单边推最安全（低负荷）。跪式俯卧撑降到2组。前推式俯卧撑可用跪式版。任何时候出现刺痛→立刻停止该动作。'},
+        ]
+    },
+    1:{ // 周二 拉力日
+        dayLabel:'拉力日 · 背 + 后肩 + 后链',
+        badge:'b-pull',badgeText:'拉力',
+        exercises:[
+            {name:'俯卧超人 4×12',info:'同时抬胸+手+脚·2秒保持',tip:'眼睛看地面！不看前方。起时想象"后背和臀同时收缩"。',feel:'整条后链（背→臀→腘绳肌）同时收紧的感觉。不要猛抬头——头只是脊柱的自然延伸'},
+            {name:'俯身 Y-T 5轮',info:'Y形10次+T形10次·拇指朝上',tip:'用肩胛骨带动手臂，不是手臂自己拉。沉肩不耸肩。',feel:'Y形：肩胛骨内侧下方（下斜方肌区域）酸胀。T形：肩胛骨之间（菱形肌区域）酸胀。都不应该是肩膀顶端酸！'},
+            {name:'反向平板支撑 3×15-30秒',info:'弯腿版·顶髋·肩下沉·下巴收',tip:'弯腿版（脚踩地膝盖弯曲）对颈更友好。下巴微收看斜上方，不是后仰。',feel:'臀肌收紧+后链整体紧张。如果后脑勺闷→下巴再收一点、肩再沉一点、降回弯腿版'},
+            {name:'农夫行走 4×30秒',info:'提水桶/书包·肩下沉·核心收紧',tip:'想象头顶被线拉高→肩下沉（不要耸到耳朵）→正常行走。',feel:'全身稳定感，核心持续收紧，前臂酸胀。走完30秒应该感觉"全身都参与了"'},
+        ],
+        postRoutine:[
+            {name:'① 枕下肌按摩 1分钟',info:'仰卧·手指按后脑勺下方凹陷处',tip:'不是用力掐！找到枕骨下方两指宽的凹陷→用指腹轻轻打圈。能忍受的力度即可。'},
+            {name:'② 后颈拉伸 3×20秒',info:'坐姿·头缓慢前倾·手轻扶后脑',tip:'只用手自身重量辅助，不强拉。感觉后颈有拉伸感即可。'},
+            {name:'③ 侧颈拉伸 每侧3×15秒',info:'头向一侧倾斜（耳靠肩，不耸肩）',tip:'对侧手可轻辅助。注意：倾斜侧的肩膀不能耸起来。'},
+            {name:'④ 下巴回收 10次',info:'头中立→下巴水平后移',tip:'主动放松——激活深层颈屈肌通过"交互抑制"帮助放松枕下肌。'},
+        ],
+        tips:[
+            {type:'good',text:'<strong>✅ 拉力日核心：</strong>眼睛始终看地面、下巴微收、用肩胛骨启动、不抬头。练后必须做颈部放松四步。'},
+            {type:'dorm',text:'<strong>🏠 宿舍替代动作：</strong>想增加训练量？看"宿舍动作"标签页——毛巾划船、弹力带后拉、俯身飞鸟等都是绝佳补充。'},
+        ]
+    },
+    2:{ // 周三 腿+核心
+        dayLabel:'腿日 · 下肢 + 核心稳定',
+        badge:'b-legs',badgeText:'腿+核心',
+        legWarmup:true,
+        exercises:[
+            {name:'深蹲 5×20',info:'自重·臀后坐·背平直',tip:'重心在脚跟，膝盖朝脚尖方向，不要内扣。下3秒→停1秒→起2秒。',feel:'大腿前侧（股四头肌）和臀部酸胀。如果膝盖痛→检查膝是否超过脚尖太多、或膝内扣'},
+            {name:'保加利亚分腿蹲 4×12/侧',info:'后脚架椅子/床沿·前腿发力',tip:'前膝对齐脚尖、不内扣。身体微微前倾让臀参与更多。手扶墙保持平衡。',feel:'前腿臀大肌+股四头肌酸胀，后腿髋前侧（髋屈肌）有拉伸感'},
+            {name:'臀桥 4×20',info:'先夹臀再顶髋·顶点停2秒',tip:'不是"用腰往上顶"！先主动收紧臀部→然后用臀把髋顶起来。',feel:'臀部收紧酸胀（像有人掐住你的臀部两侧）。如果腰酸→说明用腰顶了，放低重新来'},
+            {name:'平板支撑 4×60秒',info:'身体直线·看地面·均匀呼吸',tip:'核心收紧（像有人要打你肚子）→不塌腰不撅臀→均匀呼吸绝不屏气。',feel:'整个核心区域（腹横肌、腹直肌、腹斜肌）均匀收紧发热。腰不酸=正确'},
+            {name:'死虫式 3×12',info:'慢速·腰始终贴地·对侧手脚',tip:'手轻推膝盖→感受深层腹部收紧。如果腰拱起来→减小幅度或做单侧版。',feel:'深层腹部收紧感（腹横肌），像一条宽腰带勒紧。腰始终贴地——这是检验标准'},
+        ],
+        tips:[
+            {type:'good',text:'<strong>✅ 腿日核心：</strong>膝盖不内扣、腰不酸、臀发力、核心始终收紧。深蹲数量多=耐力和动作模式打造阶段。'},
+        ]
+    },
+    3:{ // 周四 推力日（同周一）
+        dayLabel:'推力日 · 胸 + 肩（前/中束）',
+        badge:'b-push',badgeText:'推力',
+        chestActivate:true,
+        exercises:[
+            {name:'靠墙俯卧撑 4×15',info:'手比肩宽·3-1-1节奏·夹胸',tip:'如果周一训练后胸有感觉，今天会更明显。保持同样的慢节奏。',feel:'第二次推力日——胸肌通常比第一次更有感觉！神经肌肉连接在建立。'},
+            {name:'跪式俯卧撑 4×10',info:'手比肩宽·3-1-1·底部停1秒',tip:'如果左肩仍不适→减少到2组或不做到力竭',feel:'胸肌应有比周一更清晰的酸胀感。如果还没有→检查手距和肘角'},
+            {name:'前推式俯卧撑 3×8',info:'肩略超手掌·3-1-1节奏',tip:'可尝试跪式前推',feel:'腋下前锯肌酸胀。这块肌肉越强，圆肩改善越明显'},
+            {name:'靠墙单边推 3×10/侧',info:'单侧胸肌·核心抗旋',tip:'完全专注单侧胸肌的收缩',feel:'单侧孤立感强——是检查两侧胸肌发力是否对称的好时机'},
+        ],
+        tips:[
+            {type:'good',text:'<strong>✅ 周四推力日：</strong>与周一相同但身体状态不同。如果周一训练后胸肌有DOMS（延迟性酸痛），今天应以动作质量为主，数量不减但速度放更慢。'},
+            {type:'warn',text:'<strong>⚠️ 肩伤提醒：</strong>如果左肩前中束仍感不适→跳过前推式俯卧撑，多练靠墙版本。去看"肩伤康复"标签页。'},
+        ]
+    },
+    4:{ // 周五 拉力日（同周二）
+        dayLabel:'拉力日 · 背 + 后肩 + 后链',
+        badge:'b-pull',badgeText:'拉力',
+        exercises:[
+            {name:'俯卧超人 4×12',info:'同时抬+保持2秒',tip:'本周第二次拉力日——后链感觉更好。保持眼睛看地面。',feel:'后背和臀部同时收紧。如果后脑勺闷→立即检查是否抬头了'},
+            {name:'俯身 Y-T 5轮',info:'Y10次+T10次·肩胛骨启动',tip:'更专注肩胛骨的运动轨迹——想象肩胛骨在背上"滑动"',feel:'肩胛骨之间的"深层酸胀感"——这是菱形肌和中下部斜方肌在工作的标志'},
+            {name:'反向平板支撑 3×15-30秒',info:'弯腿版·下巴收·肩下沉',tip:'如果弯腿版已轻松→尝试直腿版（从15秒开始）',feel:'后链整体紧张。颈部的负担应该为零——如果后脑勺有任何不适，回到弯腿版'},
+            {name:'农夫行走 4×30秒',info:'提重物·肩下沉行走',tip:'可以比周二略重一点点',feel:'核心和前臂。走的时候感觉"全身都在为稳定工作"'},
+        ],
+        postRoutine:[
+            {name:'① 枕下肌按摩 1分钟',info:'仰卧·手指按后脑勺下方',tip:'每天做这个会让你的后脑勺问题逐渐消失。坚持。'},
+            {name:'② 后颈拉伸 3×20秒',info:'坐姿·头前倾·轻辅助',tip:''},
+            {name:'③ 侧颈拉伸 每侧3×15秒',info:'耳靠肩·肩不耸',tip:''},
+            {name:'④ 下巴回收 10次',info:'水平后移下巴',tip:''},
+        ],
+        tips:[
+            {type:'dorm',text:'<strong>🏠 想加练？</strong>去"宿舍动作"标签页，毛巾划船和弹力带后拉是绝佳补充。宿舍用弹力带是最好的投资（几十元）。'},
+        ]
+    },
+    5:{ // 周六 体态矫正
+        dayLabel:'体态矫正日 · 圆肩+驼背+头前伸',
+        badge:'b-posture',badgeText:'矫正',
+        exercises:[
+            {name:'墙天使 4×15',info:'背靠墙·手臂贴墙·W→上举',tip:'最难的是全程保持手背+肘+肩贴墙。做不到全程→缩小活动范围，但坚决不离开墙。',feel:'大臂后侧（后三角肌+肩袖）轻微酸。如果大臂前侧（肱二头肌）酸→手肘可能没贴墙。如果脖子酸→下巴上抬了。'},
+            {name:'俯身 Y-T 5轮',info:'Y形10次+T形10次',tip:'肩胛骨启动·不耸肩·拇指朝上',feel:'与拉力日相同——肩胛骨之间深层酸胀。这天的Y-T做更慢、更专注'},
+            {name:'下巴回收 3×15',info:'头中立·下巴水平后移·保持2秒',tip:'这是你改善头前伸的"王牌动作"。每天都可以做。',feel:'喉咙后方深处轻微发力感，像有人轻轻把下巴向后推。不是低头！'},
+            {name:'靠墙站姿 3分钟',info:'脚跟·臀·肩胛·后脑勺都贴墙',tip:'如果后脑勺贴墙困难（你很可能做不到）→先不贴后脑勺，只收下巴。目标是最终五个点都贴墙。',feel:'全身姿势肌群在"对抗重力"——后背、臀部、核心都在微微收紧。这是你的"体态基准线"'},
+        ],
+        extraSection:{
+            title:'胸椎活动 10分钟',
+            items:[
+                {name:'猫牛式 2分钟',info:'四足跪姿·吸气弓背·呼气塌腰',tip:'动作缓慢流畅，配合呼吸。感受脊柱一节一节地活动。',feel:'脊柱从颈椎到尾骨逐节活动，像波浪一样。胸椎区域（上背部）应有明显的活动感'},
+                {name:'穿针引线 每侧10次',info:'四足→单手穿向对侧→旋转胸椎',tip:'眼睛跟随手掌移动。旋转来自胸椎，不要过度转动腰椎。',feel:'胸椎旋转时上背部有"被打开"的感觉。不要追求幅度，追求质量'},
+                {name:'胸椎伸展（用椅子）3分钟',info:'坐在椅子边缘→双手抱后脑→向后仰',tip:'只用胸椎后仰，腰椎保持稳定。后仰时吸气，回来时呼气。',feel:'胸椎伸展时胸骨前方有拉开感，上背部有压力释放感'},
+                {name:'动态胸椎旋转 每侧10次',info:'侧卧→上方手旋转打开→眼睛跟随手',tip:'膝盖靠拢固定腰椎→只旋转胸椎',feel:'胸椎旋转集中在肋骨区域，不是腰部'},
+            ]
+        },
+        tips:[
+            {type:'good',text:'<strong>✅ 体态矫正日核心：</strong>不求疲劳，求质量。这一天是"姿势神经训练"——让你的大脑重新学习什么是"良好排列"。质量>>数量。'},
+        ]
+    },
+};
+
+// ======================== 宿舍友好训练动作（新增） ========================
+const DORM_EXERCISES = [
+    {
+        category:'背部训练',
+        exercises:[
+            {name:'毛巾/床单划船',info:'毛巾打结→夹在门缝→双手拉毛巾→身体后坐→拉向胸口',desc:'这是宿舍里最好的划船替代动作！',detail:'<strong>做法：</strong>①毛巾打一个结→夹在房门顶部/门框→确认夹紧。②双手抓住毛巾两端→身体后仰约30°→手臂伸直。③肩胛骨先启动（夹背）→手肘后拉→将身体拉向门。④慢放3秒回到起始位。<br><br><strong>组数建议：</strong>3-4组×10-12次。慢下3秒。<br><strong>主要训练：</strong>背阔肌、菱形肌、中下斜方肌。<br><strong>关键：</strong>用力时想象"肩胛骨往中间夹、手肘往身后走"，不要只用手臂拉。<br><strong>⚠️注意：</strong>确认门夹牢！眼睛看前方偏下，不抬头。'},
+            {name:'门框反向划船',info:'手握门框两侧→身体后仰→拉向门框',desc:'门框就是你的"杠铃"',detail:'<strong>做法：</strong>①站在门框内→双手各握住门框两侧（手指朝前）。②脚跟着地→身体后仰→手臂伸直。③用背部力量将身体拉向门框→胸口接近门框边缘。④慢放回去。<br><br><strong>组数建议：</strong>3×8-12次。<br><strong>主要训练：</strong>背阔肌、中背部、后三角肌。<br><strong>降阶：</strong>脚离门框越近越简单（身体越直立越省力）。<br><strong>⚠️注意：</strong>手指可能累！如果握不住→用毛巾划船替代。'},
+            {name:'俯身水瓶/书包飞鸟',info:'微俯身→双手各持水瓶→向两侧平举',desc:'练后三角肌（改善圆肩的关键肌肉）',detail:'<strong>做法：</strong>①双手各拿一个装满水的水瓶（或一瓶500ml矿泉水）。②微俯身45°→背平直→手臂自然下垂。③拇指朝上→手臂向两侧平举→肩胛骨往中间夹→想象"把后背夹住一枚硬币"。④慢放。<br><br><strong>组数建议：</strong>4×15-20次。轻重量+高次数是后三角肌训练的原则。<br><strong>主要训练：</strong>后三角肌、菱形肌、中斜方肌。<br><strong>关键错误：</strong>不要耸肩！不要用斜方肌上束把肩膀拉到耳朵旁边。'},  
+            {name:'俯身交替划船（水瓶）',info:'俯身→单手划船→交替',desc:'单手划船减少腰部压力',detail:'<strong>做法：</strong>①一手撑桌子/椅子→另一手持水瓶。②背平直→核心收紧。③将水瓶拉向腰部→肘贴近身体→肩胛骨向后缩。④慢放。左右交替。<br><br><strong>组数建议：</strong>每侧3×12-15次。<br><strong>主要训练：</strong>背阔肌（单侧）。<br><strong>关键：</strong>拉的时候"肘往身后走"，不是"手往身上拉"。'},
+        ]
+    },
+    {
+        category:'背部补充——弹力带动作（强烈推荐购买！几十元）',
+        exercises:[
+            {name:'弹力带高位后拉（Face Pull）',info:'弹力带固定门把→双手拉向面部→外旋',desc:'改善圆肩的"黄金动作"',detail:'<strong>做法：</strong>①弹力带固定在门把上（与面部同高）。②双手抓住弹力带两端→后退到有张力。③向后拉→同时手臂外旋（拇指朝后）→拉到面部两侧。④关键：拉到末端时肩胛骨完全往中间夹。<br><br><strong>组数建议：</strong>3-4×15-20次。轻弹力带+高次数。<br><strong>主要训练：</strong>后三角肌+肩袖外旋肌群+中下斜方肌。<br><strong>为什么这是黄金动作：</strong>它同时训练了肩胛后缩+肩外旋——圆肩的"反向运动"。'},
+            {name:'弹力带外旋',info:'肘夹腰→前臂外旋→拉开弹力带',desc:'肩袖强化——预防肩伤的核心',detail:'<strong>做法：</strong>①弹力带固定在门把→侧身站立→外侧手抓住弹力带。②肘关节弯曲90°紧贴腰部（夹一块毛巾确保肘不离开身体）。③前臂从腹部前方→向外旋转拉开弹力带。④慢放。<br><br><strong>组数建议：</strong>每侧3×15次。一定要用轻弹力带！<br><strong>主要训练：</strong>冈下肌+小圆肌（肩袖外旋肌）。<br><strong>⚠️这是肩部受伤后康复的必做动作！</strong>每周至少3次。'},
+            {name:'弹力带划船',info:'弹力带绕脚底→坐姿划船',desc:'坐姿版划船，对腰更友好',detail:'<strong>做法：</strong>①坐在地面→腿伸直→弹力带绕在脚底。②双手抓住弹力带→手臂伸直。③肩胛先启动（夹背）→手肘后拉→拉到腹部。④慢放。<br><br><strong>组数建议：</strong>4×12-15次。控制离心3秒。'},
+            {name:'弹力带Y-T',info:'弹力带踩脚下→俯身做Y-T',desc:'比徒手Y-T更有阻力、感受更强',detail:'<strong>做法：</strong>①弹力带踩在双脚下→双手各持一端。②俯身45°→背平。③做Y形和T形上抬——弹力带的阻力让肩胛稳定肌群工作更充分。<br><br><strong>关键：</strong>弹力带阻力让肩胛骨必须更努力地稳定——这恰恰是你需要的。'},
+        ]
+    },
+    {
+        category:'胸部补充',
+        exercises:[
+            {name:'弹力带夹胸',info:'弹力带绕过后背→双手前推夹胸',desc:'比俯卧撑更容易找到胸肌发力感',detail:'<strong>做法：</strong>①弹力带从背后绕过（放在肩胛骨位置）。②双手各持弹力带一端→手臂微弯。③从两侧向胸前中线"夹"——想象"胸肌把手臂往中间挤"。④慢放3秒。<br><br><strong>组数建议：</strong>3×15-20次。慢!<br><strong>为什么有用：</strong>这个动作的水平内收轨迹是胸大肌的纯功能——不涉及三头肌。新手的胸肌激活神器。'},
+            {name:'窄距跪姿俯卧撑',info:'手比肩窄→肘贴身体→练三头+内胸',desc:'不推荐你现在主打，但可偶尔尝试',detail:'<strong>注意：</strong>窄距俯卧撑对手臂（三头肌）要求高，与你"减少手臂代偿"的目标相悖。偶尔做1-2组感受内胸收缩即可，不放入主训练。'},
+        ]
+    },
+    {
+        category:'核心 + 全身',
+        exercises:[
+            {name:'床沿举腿',info:'仰卧床沿→腿伸出床外→抬腿',desc:'下腹训练',detail:'<strong>做法：</strong>①仰卧→臀部在床沿→双腿伸出床外悬空。②双手抓床垫边。③收紧核心→双腿抬起（膝盖微弯）→到90°→慢放，但不让脚触地。<br><br><strong>组数：</strong>3×12-15次。慢放是关键。腰始终贴床。'},
+            {name:'波比跳（简化版）',info:'无俯卧撑的波比→适合宿舍有氧',desc:'心肺+全身',detail:'<strong>做法：</strong>①站立→下蹲双手触地→②双脚跳/走到后退位→③跳回蹲姿→④站起。不包含俯卧撑。做30秒×3组，组间休息30秒。<br><br><strong>注意：</strong>宿舍楼下有人→降低落地声音！可以去掉跳跃、用走步代替。'},
+            {name:'侧平板支撑',info:'侧身·核心抗侧屈',desc:'腹斜肌+肩稳定',detail:'<strong>做法：</strong>①侧卧→肘在肩正下方→叠脚或分脚。②顶髋→身体成一条直线。③保持20-30秒→换边。<br><strong>降阶：</strong>膝盖着地。每侧3组。'},
+        ]
+    },
+    {
+        category:'弹力带选购建议',
+        exercises:[
+            {name:'🎯 推荐购买：弹力带/阻力带（几十元）',info:'宿舍训练的最佳投资',desc:'一条弹力带=几十个动作的可能性',detail:'<strong>推荐买什么：</strong><br>• <strong>条状弹力带（Tube Band）</strong>：带把手的，适合划船、后拉、夹胸<br>• <strong>环形弹力带（Loop Band）</strong>：适合热身、肩袖激活、臀激活<br>• <strong>建议买2-3条不同阻力</strong>：轻（10-15磅）+中（20-30磅）+重（30-50磅）<br><br><strong>预算约50-100元</strong>，可以用很久。这是你在宿舍能做的"最好的投资"。没有弹力带的话，水瓶装满水也可以替代轻阻力。'},
+        ]
+    },
+];
+
+// ======================== 肩部受伤恢复与预防（新增） ========================
+const SHOULDER_SECTIONS = [
+    {
+        title:'🩺 左肩前中束拉伤——发生了什么？',
+        content:`<p>你在做俯卧撑时左肩<strong>前三角肌和中三角肌的缝隙处</strong>被"扯到"，这是一个非常典型的训练信号。</p>
+<p><strong>最可能的原因（按可能性排序）：</strong></p>
+<ol>
+<li><span class="highlight">肩袖肌群（特别是冈上肌/冈下肌）力量不足</span>→俯卧撑时肱骨头在关节盂内不稳定→前/中三角肌被迫过度工作→拉伤</li>
+<li><span class="highlight">肩胛骨不稳定</span>→做俯卧撑时肩胛骨没有正确后缩/前伸→肩关节力学异常→某些点承受过多压力</li>
+<li><span class="highlight">手距太宽+肘太开（接近90°）</span>→肩关节处于极度外展+外旋位→前侧关节囊和前三角肌过度受力</li>
+<li><span class="highlight">推起后过度前伸肩胛（翼状肩）</span>→肩胛骨失去稳定性→肩膀被迫代偿稳定→三角肌过度用力</li>
+</ol>
+<p><strong>好消息是：</strong>你感受到的是"扯到"，不是"突然剧痛后无法活动"。这大概率是轻度肌肉拉伤（一级），休息+正确康复可以在1-2周内恢复。但如果继续在不正确姿势下训练，可能发展为慢性肩袖损伤。</p>`
+    },
+    {
+        title:'🚑 急性期处理（受伤后48-72小时内）',
+        content:`<p><strong>POLICE原则（比传统的RICE更现代）：</strong></p>
+<ol>
+<li><strong>保护（Protection）：</strong>停止任何引起肩痛的动作。不是停止所有训练——靠墙俯卧撑如果无痛可以做，深蹲/臀桥等下肢训练完全没问题。只避开引起症状的动作。</li>
+<li><strong>适当负荷（Optimal Loading）：</strong>在无痛范围内做轻活动。完全不动反而会让肩关节变僵硬。你的"肩部康复动作"（下方）就是在无痛范围的活动。</li>
+<li><strong>冰敷（Ice）：</strong>伤后48小时内→冰敷肩前侧/外侧→每次15分钟→每天3-4次。用毛巾包裹冰袋，不要直接敷。</li>
+<li><strong>加压（Compression）：</strong>弹力绷带轻包（不要过紧）。</li>
+<li><strong>抬高（Elevation）：</strong>对肩部来说就是放松手臂、不长时间下垂。</li>
+</ol>
+<p><strong>48小时后：</strong>转为热敷（促进血液循环），开始做下方的康复动作。</p>`
+    },
+    {
+        title:'🔄 肩部康复动作（无痛范围内做）',
+        content:`<p><strong>以下动作在"完全不痛"的范围内进行。如果任何动作引起疼痛→减小幅度或跳过。</strong></p>
+<div class="kb-card"><h4>① 钟摆运动（Codman\'s Pendulum）——每天做</h4>
+<p>站姿→微俯身→伤侧手臂自然下垂→利用身体摆动让手臂画小圈。顺时针10圈→逆时针10圈→前后摆动10次。做3组。</p>
+<p><strong>目的：</strong>温和活动肩关节，促进滑液循环，防止僵硬。</p></div>
+<div class="kb-card"><h4>② 弹力带肩外旋——康复核心动作</h4>
+<p>肘弯曲90°紧贴腰部→前臂从腹部前方→向外旋转（拉开弹力带）。用最轻的弹力带，15次×3组。</p>
+<p><strong>目的：</strong>强化肩袖外旋肌（冈下肌+小圆肌），这是稳定肩关节的关键。你的圆肩导致这些肌肉被拉长且薄弱→肩关节不稳定→容易受伤。</p></div>
+<div class="kb-card"><h4>③ 弹力带肩内旋——平衡训练</h4>
+<p>肘弯曲90°紧贴腰部→弹力带固定在身体外侧→前臂从外侧→向内拉到腹部。15次×3组。</p></div>
+<div class="kb-card"><h4>④ 肩袖全面激活</h4>
+<p>靠墙站姿→手臂呈W形→慢慢上举→慢放下。全程手臂贴墙。10次×3组。这个动作也是你的体态矫正动作——一举两得。</p></div>
+<div class="kb-card"><h4>⑤ 肩胛控制训练</h4>
+<p>四足跪姿→保持手臂伸直→只做肩胛骨的活动：前伸（肩胛骨推开，背部隆起）→后缩（肩胛骨往中间夹，背部微凹）。慢速，10次×3组。感受肩胛骨在胸廓上"滑动"。</p></div>`
+    },
+    {
+        title:'🛡️ 肩伤预防——以后每次训练前必做',
+        content:`<p>把这几个动作加入你的推力日和拉力日热身中（在统一热身后、主训练前做）：</p>
+<table>
+<tr><th>动作</th><th>组数</th><th>目的</th></tr>
+<tr><td><strong>弹力带肩外旋</strong>（无弹力带可用水瓶轻量）</td><td>每侧2×15</td><td>激活肩袖→稳定肩关节</td></tr>
+<tr><td><strong>肩胛俯卧撑（跪姿）</strong></td><td>2×10</td><td>激活前锯肌→肩胛稳定</td></tr>
+<tr><td><strong>弹力带后拉/无弹力带则靠墙W上举</strong></td><td>2×12</td><td>激活后三角肌+菱形肌→对抗圆肩</td></tr>
+<tr><td><strong>手臂画圈（小→大）</strong></td><td>正反各10次</td><td>肩关节全方位润滑</td></tr>
+</table>
+<p><strong>关键原则：</strong></p>
+<ul>
+<li>推力日俯卧撑→手比肩宽（1.5倍肩宽），肘45°</li>
+<li>推到顶时<strong>不要过度前伸肩胛</strong>（变成翼状肩姿势）</li>
+<li>始终保持肩胛骨的主动控制</li>
+<li><span class="highlight">出现任何刺痛→立刻停止并检查姿势</span></li>
+</ul>`
+    },
+    {
+        title:'📋 受伤期间训练调整指南',
+        content:`<p><strong>可以做的：</strong></p>
+<ul>
+<li>✅ 靠墙俯卧撑（最低负荷，通常无痛）</li>
+<li>✅ 所有腿部训练（深蹲、分腿蹲、臀桥）</li>
+<li>✅ 核心训练（平板支撑—肘撑版、死虫式）</li>
+<li>✅ 腿部热身</li>
+<li>✅ 体态矫正日全部内容</li>
+<li>✅ 练后拉伸</li>
+<li>✅ 肩部康复动作</li>
+</ul>
+<p><strong>暂时避免的：</strong></p>
+<ul>
+<li>❌ 跪式俯卧撑（如果引起疼痛）</li>
+<li>❌ 前推式俯卧撑（肩前侧受力大）</li>
+<li>❌ 任何引起左肩不适的动作</li>
+</ul>
+<p><strong>恢复后回归：</strong>从靠墙俯卧撑慢慢过渡→跪式→标准。每次升级组数减少（例如跪式从4×10降到2×10），观察肩部反应。完全恢复需要耐心。</p>`
+    },
+];
+
+// ======================== 35问答 ========================
+const QA_DATA=[
+    { q:'1. 为什么练胸时肱三头肌比胸肌还酸？',
+      a:`<p><strong>核心原因：胸肌不会主动发力——神经肌肉连接不足。</strong></p>
+<p>当你做俯卧撑时，大脑发出"推"的指令，你的身体会自动选择最强壮、最习惯的肌肉来执行——这就是<strong>肱三头肌</strong>。因为你在日常生活中的推门、推桌子等动作已经训练了三头肌的神经通路，而胸肌的主动收缩通路却很弱。</p>
+<p><strong>解剖学解释：</strong>俯卧撑需要<strong>肩水平内收</strong>（胸大肌的功能）和<strong>肘伸展</strong>（肱三头肌的功能）同时发生。如果你的肩胛骨不稳定（圆肩者通常如此），胸大肌的力线会被打乱→它能输出的力量下降→三头肌被迫承担更多的推起责任→三头肌比胸肌更酸。</p>
+<p><strong>解决方案（按优先级）：</strong></p><ol>
+<li>练前做胸肌激活（双手互推等长收缩）</li>
+<li>手放比肩宽（1.5倍肩宽）让胸肌更有力线优势</li>
+<li>慢下3秒——离心阶段是胸肌被拉伸和微损伤的关键</li>
+<li>推到顶时主动"夹胸"</li></ol>` },
+    { q:'2. 如何让胸部更有发力感？',
+      a:`<p><strong>五步法（按顺序执行）：</strong></p>
+<ol><li><span class="highlight">练前激活：</span>双手互推10秒×3组（等长收缩）。这是"唤醒"胸肌最有效的方法。</li>
+<li><span class="highlight">胸肌轻拉伸：</span>门框拉伸20秒×2组。拉伸后的肌肉在收缩时本体感觉更强。</li>
+<li><span class="highlight">手比肩宽：</span>1.5倍肩宽=胸肌最佳力线。太窄→三头肌主导。</li>
+<li><span class="highlight">3-1-1慢节奏：</span>下3秒（离心）=胸肌被拉伸和微损伤最大的阶段。慢=更多时间在张力下=更多胸肌参与。底部停1秒可以消除弹性能量，确保胸肌（而不是弹性组织）做功。</li>
+<li><span class="highlight">推到顶"夹胸"：</span>在推起的最后5厘米，主动想象"胸肌把两只手往中间挤"。这不是实际移动手——而是肌肉内部的额外收缩。</li></ol>
+<p><strong>检验标准：</strong>如果做完一组跪式俯卧撑后，胸肌区域有发热/膨胀/酸胀感，而不是三头肌手臂后侧酸——说明发力对了。</p>` },
+    { q:'3. 如何减少手臂代偿？',
+      a:`<p><strong>手臂代偿=目标肌肉（胸肌）发力不够→手臂（三头肌+前肩）被迫多做功。</strong></p>
+<p><strong>减少代偿的5个策略：</strong></p><ol>
+<li><span class="highlight">手比肩宽（1.5倍肩宽）：</span>宽距=胸肌力臂更长=胸肌更有"力学优势"=三头肌相对劣势</li>
+<li><span class="highlight">慢速离心：</span>3秒下放。快下=惯性+弹性能量=关节和结缔组织承担→慢下=肌肉承担全部负荷</li>
+<li><span class="highlight">先激活再训练：</span>双手互推→"唤醒"胸肌通路→训练时大脑更可能先选胸肌</li>
+<li><span class="highlight">专注"夹"而不是"推"：</span>推=肘伸展（三头肌）。夹=水平内收（胸肌）。当你专注在"夹"的感觉时，大脑会优先招募胸肌的运动单位</li>
+<li><span class="highlight">肘角45°（不要夹紧身体，也不要完全张开）：</span>夹紧（0°）→三头肌主导。完全张开（90°）→肩压力大。45°≈胸肌+肩安全的平衡点</li></ol>` },
+    { q:'4. 宽距、窄距俯卧撑区别？',
+      a:`<table><tr><th>维度</th><th>宽距俯卧撑（手>1.5倍肩宽）</th><th>窄距俯卧撑（手≤肩宽）</th></tr>
+<tr><td>主导肌群</td><td><span class="kf">胸大肌</span>（特别是外侧胸）</td><td><span class="kf">肱三头肌</span>+前三角肌+内胸</td></tr>
+<tr><td>肘关节轨迹</td><td>肘向外张开约45-60°</td><td>肘贴近身体两侧</td></tr>
+<tr><td>肩关节压力</td><td>手过宽+肘太开=肩前侧压力大</td><td>肩压力较小</td></tr>
+<tr><td>你的适用性</td><td><span class="kf">更适合你！</span>（需要胸肌发力）</td><td>目前不推荐（会加重手臂代偿）</td></tr>
+<tr><td>建议手距</td><td>1.5倍肩宽≈两手掌之间约60-70cm</td><td>只偶尔尝试感受内胸</td></tr></table>
+<p><strong>结论：</strong>你目前阶段应该主练宽距（让胸肌发力），窄距等胸肌发力感建立好之后再考虑。过度窄距=强化了你已有的"手臂代偿"问题。</p>` },
+    { q:'5. 为什么靠墙俯卧撑胸没感觉？',
+      a:`<p><strong>靠墙俯卧撑胸没感觉是正常的——但你不应该跳过它。</strong></p>
+<p><strong>原因：</strong></p><ul>
+<li>身体越直立→重力对身体的作用线越接近垂直→胸肌需要克服的水平分力越小→负荷非常轻</li>
+<li>负荷轻→胸肌不需要全力收缩→你可能感觉不到明显的"酸胀"</li>
+<li>但如果你的手臂代偿严重→即使靠墙版也可能三头肌比胸肌更有感觉</li>
+</ul>
+<p><strong>那为什么还要做？</strong></p><ol>
+<li>靠墙版是你学习"正确俯卧撑模式"的最低风险环境</li>
+<li>在靠墙版上练习：手距→肘角→夹胸→慢节奏→肩胛控制。这些都是"动作模式"，不是肌肉负荷</li>
+<li>如果你在靠墙版上都做不对（耸肩/头前伸/肘夹紧），跪式版只会放大这些错误</li>
+<li>靠墙版是你的"动作排练"——先在排练中做对，再到跪式版中加负荷</li>
+</ol>
+<p><strong>优化方法：</strong>做靠墙版时专注的不是"把身体推离墙"，而是"感受胸肌的内部收缩"。意念放在胸肌上，推到顶时额外夹胸0.5秒。你要的是神经肌肉连接，不是肌肉疲劳。</p>` },
+    { q:'6. 如何正确"夹胸"？',
+      a:`<p><strong>"夹胸"不是实际移动双手，而是激活胸大肌的水平内收功能的意念技巧。</strong></p>
+<p><strong>做法：</strong>在俯卧撑推到顶时（手臂接近伸直但肘微弯），主动想象两只手正在往中间"夹"——就像你要夹住胸前的一个气球。你会发现胸肌不自觉地额外收缩了一瞬间。</p>
+<p><strong>为什么有效：</strong>胸大肌的主要功能是<strong>肩关节水平内收</strong>——把手臂从身体侧面拉到身体前方。俯卧撑的推起阶段包含了这个动作成分，但如果你不刻意"夹"，大脑可能会把这个任务交给三头肌和前肩。当你主动想象"夹"时，你在给大脑一个明确的指令："用胸肌"。</p>
+<p><strong>练习：</strong>先不在地面上练。坐着或站着，双手在胸前合十用力互推10秒——你会立刻感觉到胸肌收紧。这就是"夹胸"的感觉。把它迁移到俯卧撑的顶点。` },
+    { q:'7. 什么是肩胛稳定？',
+      a:`<p><strong>肩胛稳定（Scapular Stability）</strong>=肩胛骨在运动中保持正确位置和受控运动的能力。</p>
+<p>肩胛骨是上肢与躯干的"连接平台"。所有上肢力量都必须通过这个平台传递。如果平台不稳（肩胛骨乱动），力量就会漏掉——你的胸肌和背肌就无法有效发力。</p>
+<p><strong>圆肩者的典型问题：</strong>肩胛骨被"锁"在前倾+前伸+外展的位置→菱形肌和中下斜方肌（稳定肩胛的肌肉）被拉长且薄弱→肩胛骨无法在俯卧撑中正确后缩→胸肌力线被打乱→手臂代偿。</p>
+<p><strong>你的训练如何解决：</strong>墙天使→训练肩胛在墙上的正确滑动。Y-T→训练肩胛的后缩和上旋控制。前推式俯卧撑→训练前锯肌（肩胛前伸的稳定肌）。这都是在建立肩胛稳定。</p>` },
+    { q:'8. 什么是肩胛骨收紧？',
+      a:`<p><strong>肩胛骨收紧=肩胛骨向脊柱中线靠拢（后缩）。</strong>就像"在背后夹住一枚硬币"。</p>
+<p>执行这个动作的主要肌肉是<strong>菱形肌</strong>（深层）和<strong>中斜方肌</strong>（中层）。这些肌肉在圆肩者身上通常被拉长且薄弱，需要专门强化。</p>
+<p><strong>在俯卧撑中：</strong>下放到底时肩胛骨自然往中间收→推起时肩胛骨微微前伸但不过度。不是全程死夹背！</p>
+<p><strong>在Y-T中：</strong>T形就是纯肩胛后缩训练。每一次T形上抬=一次"加强版肩胛收紧"。</p>` },
+    { q:'9. 什么是圆肩、驼背、头前伸？',
+      a:`<p><strong>这三个通常同时出现，合称"上交叉综合征（Upper Crossed Syndrome）"：</strong></p>
+<ul><li><strong>圆肩（Rounded Shoulders）：</strong>肩胛骨前移+外展+前倾，肩膀往前卷。外观上从侧面看肩膀在耳朵前方。</li>
+<li><strong>驼背（Thoracic Kyphosis）：</strong>胸椎过度后凸，上背部弯曲。外观上从侧面看背部隆起。</li>
+<li><strong>头前伸（Forward Head Posture）：</strong>头在脊柱前方，耳垂在肩峰前方。每前伸2.5cm≈颈椎额外承受4.5kg压力。</li></ul>
+<p><strong>肌肉失衡模式：</strong>前侧（胸大肌+胸小肌+上斜方肌+肩胛提肌+枕下肌）过紧→后侧（菱形肌+中下斜方肌+深层颈屈肌+前锯肌）薄弱→身体被往前"拉"。</p>
+<p><strong>你172cm/60kg的体型=长期低头看书/看手机+缺乏背部训练+偏瘦=上交叉综合征的典型诱因。</strong></p>` },
+    { q:'10. 如何改善圆肩驼背？',
+      a:`<p><strong>改善圆肩驼背需要"前后平衡"：</strong></p>
+<p><strong>①拉长前侧过紧的肌肉（拉伸）：</strong>胸大肌/胸小肌拉伸（门框拉伸）、上斜方肌拉伸（侧颈拉伸）、枕下肌放松。</p>
+<p><strong>②强化后侧薄弱的肌肉（训练）：</strong>菱形肌+中下斜方肌（Y-T、墙天使）、后三角肌（Y-T的Y和T都涉及）、深层颈屈肌（下巴回收）、前锯肌（前推式俯卧撑）。</p>
+<p><strong>③改善胸椎活动度：</strong>猫牛式、穿针引线、胸椎伸展——让胸椎不再"锁"在后凸位。</p>
+<p><strong>④日常姿势意识：</strong>坐着时肩胛微微后缩、下巴微收。站姿靠墙练习找到正确排列感。每天做几次下巴回收。</p>
+<p><strong>你的周六体态矫正日就是这四点的完整组合。</strong></p>` },
+    { q:'11. 墙天使为什么大臂会酸？',
+      a:`<p><strong>正常的！</strong>墙天使要求手臂全程贴墙上举下落，这个动作需要后三角肌和肩袖肌群（冈上肌、冈下肌、小圆肌）持续工作来维持手臂的外旋和贴墙位置。大臂外侧和后侧的酸胀=后三角肌和肩袖在工作——这正是你需要的。</p>
+<p><strong>不正常的情况：</strong></p><ul>
+<li>大臂<strong>前侧</strong>（肱二头肌区域）酸→你的手肘可能没贴墙，前臂在代偿</li>
+<li><strong>脖子</strong>酸→下巴上抬了，颈部伸肌参与了</li>
+<li><strong>肩膀顶端</strong>酸（上斜方肌区域）→你在耸肩。检查沉肩</li>
+</ul>
+<p><strong>如果你的大臂酸到做不完12次→减少活动范围（手只举到一半高），但坚持贴墙。</strong></p>` },
+    { q:'12. 靠墙站姿正确做法？',
+      a:`<p><strong>目标：</strong>脚跟、臀部、肩胛骨、后脑勺——四个点贴墙。这是你的"标准体态"。很多人（尤其圆肩驼背者）做这个动作时后脑勺根本碰不到墙。</p>
+<p><strong>步骤：</strong></p><ol>
+<li>背对墙站立→脚跟离墙约5-10cm</li>
+<li>臀部先贴墙→然后肩胛骨贴墙（需要主动夹背+挺胸）</li>
+<li>下巴回收→尽量让后脑勺靠近/接触墙</li>
+<li>如果后脑勺碰不到（你可能碰不到）→不强求！保持下巴回收、头顶向上延伸的感觉即可</li>
+<li>保持3分钟→正常呼吸→感觉全身姿势肌群在微微工作</li></ol>
+<p><strong>这不是"靠在那里放松"——你全身的姿势肌群应该在主动工作来维持这个排列。</strong>每天做，你的身体会慢慢重新学习"什么是直立"。</p>` },
+    { q:'13. 下巴回收正确做法？',
+      a:`<p><strong>下巴回收（Chin Tuck）是最重要的头前伸矫正动作。</strong></p>
+<p><strong>错误做法（最常见！）：</strong>低头→下巴靠近胸口。这种是颈椎屈曲，练的不是深层颈屈肌。</p>
+<p><strong>正确做法：</strong></p><ol>
+<li>头部保持中立→眼睛看正前方→头不低不仰</li>
+<li>下巴<strong>水平向后</strong>移动→像"缩头乌龟"的动作→感觉喉咙后方深处有轻微发力感</li>
+<li>保持2秒→缓慢放松→下巴回到中立</li></ol>
+<p><strong>正确与错误的区别：</strong>下巴回收=下巴在水平面上后移（耳垂相对肩峰后移）。低头=下巴向下+颈椎屈曲。你可以在镜子前练习：下巴回收应该让你看起来"脖子变直了"，而不是"头变低了"。</p>
+<p><strong>训练频率：</strong>2-3组×10-15次。这个动作不仅矫正日做——每天都可以做几次。坐久了→做5次→即时纠正头位。</p>` },
+    { q:'14. 什么是俯身 Y-T？',
+      a:`<p><strong>Y-T（或称Y-T-W-L，我们简化用Y和T）</strong>是俯身状态下手臂呈Y形和T形上抬的训练动作，主要目标是激活上背部和中背部的姿势肌群。</p>
+<p><strong>起始姿势：</strong>微俯身（髋部铰链，约45°）→背部平直→手臂自然下垂→拇指朝上→肩胛骨预先后缩。</p>
+<p><strong>Y形：</strong>手臂向斜上方抬起，身体从上方看呈Y字形。手臂与身体夹角约30-45°。重点：<strong>用肩胛骨带动手臂上抬</strong>，不是用手臂自己拉。主要激活下斜方肌+后三角肌。</p>
+<p><strong>T形：</strong>手臂向两侧水平抬起，身体呈T字形。拇指始终朝上（外旋）。重点：<strong>肩胛骨往中间夹</strong>。主要激活菱形肌+中斜方肌+后三角肌。</p>` },
+    { q:'15. Y和T分别练哪里？',
+      a:`<table><tr><th>动作</th><th>主要目标肌群</th><th>功能</th></tr>
+<tr><td>Y形（斜上举）</td><td>下斜方肌 + 后三角肌 + 冈下肌</td><td>肩胛上旋稳定 + 改善圆肩 + 肩外旋控制</td></tr>
+<tr><td>T形（平举）</td><td>菱形肌 + 中斜方肌 + 后三角肌</td><td>肩胛后缩 + 挺胸 + 对抗圆肩</td></tr></table>
+<p><strong>两个动作互补：</strong>Y侧重上下方向的肩胛控制，T侧重水平方向的肩胛后缩。两者结合才能全面覆盖上背部的姿势肌群。</p>` },
+    { q:'16. 如何正确练背而不让脖子代偿？',
+      a:`<p><strong>颈部代偿的核心机制：</strong>当你做背部动作时抬头看前方，实际上是在用颈部伸肌（主要是头夹肌、颈夹肌、头半棘肌）来"辅助"身体后伸。这些肌肉反过来紧张收缩，压迫枕下肌群和枕骨区域→导致后脑勺闷、紧、不舒服。</p>
+<p><strong>五条铁律：</strong></p><ol>
+<li><span class="highlight">眼睛始终看地面</span>（不是看镜子，不是看前方）。在地上放一个标记点盯着它。</li>
+<li><span class="highlight">头完全中立</span>——想象头顶被一根线轻轻上拉，下巴微收</li>
+<li><span class="highlight">不抬头</span>——哪怕你觉得"抬头更帅"或"抬头能看清楚"</li>
+<li><span class="highlight">舌头轻抵上颚</span>——这能帮助放松下颌和颈前肌肉</li>
+<li><span class="highlight">动作前先做下巴回收</span>——每次开始一组前都做一次</li></ol>` },
+    { q:'17. 为什么练背后后脑勺会闷、紧、不舒服？',
+      a:`<p><strong>解剖学原因：</strong>后脑勺下方有一组叫做<strong>枕下肌</strong>的小肌肉（4对）。它们位于颅骨底部和第一、二颈椎之间。含有极高密度的肌梭（本体感受器）和丰富的血管神经。</p>
+<p>当你做背部动作时抬头或头部前伸，枕下肌就会过度收缩→压迫枕大神经→产生：</p><ul>
+<li>后脑勺压迫感/闷感</li>
+<li>牵涉性头痛（枕下肌紧张→枕大神经受压→后脑勺+头顶闷痛）</li>
+<li>颈部活动受限</li></ul>
+<p><strong>结合你的情况：</strong>你本身有头前伸→枕下肌已经长期处于缩短紧张状态→练背时抬头进一步收缩它们→症状加重。这就是为什么必须做枕下肌放松和下巴回收。</p>` },
+    { q:'18. 如何放松后脑勺和后颈？',
+      a:`<p><strong>①枕下肌按摩（最重要）：</strong></p><ul>
+<li>仰卧→找到后脑勺与脖子连接处的凹陷（枕骨下方）</li>
+<li>用两手指腹轻轻按进去→感觉到一串小肌肉</li>
+<li>以能忍受的力度缓慢打圈按摩1分钟</li>
+<li>也可以用网球放在那里，靠墙或躺下用体重轻压</li></ul>
+<p><strong>②后颈拉伸：</strong>坐姿→头缓慢前倾→手轻扶后脑辅助（不要用力拉）→感觉后颈有拉伸感→保持20秒×3组。</p>
+<p><strong>③侧颈拉伸：</strong>头向一侧倾斜（耳朵靠向肩膀，不要耸肩）→对侧手轻辅助→保持15秒×3组。</p>
+<p><strong>④下巴回收（主动放松）：</strong>做10次—激活深层颈屈肌，通过"交互抑制"帮助放松枕下肌。</p>` },
+    { q:'19. 什么是枕下肌？',
+      a:`<p><strong>枕下肌（Suboccipital Muscles）</strong>是位于颅骨底部和上颈椎（C1-C2）之间的4对深层小肌肉：头后大直肌、头后小直肌、头上斜肌、头下斜肌。</p>
+<p><strong>为什么它们重要：</strong></p><ul>
+<li>含有全身最高密度的肌梭（本体感觉器官），是头部位置感知的关键</li>
+<li>长期头前伸会导致它们持续缩短→紧张→压迫枕大神经→后脑勺/头顶闷痛</li>
+<li>它们与眼球运动联动——你的眼睛往哪看，枕下肌就会微微调整。所以练背时"看地面"能帮助它们放松</li></ul>` },
+    { q:'20. 什么是胸椎活动？',
+      a:`<p><strong>胸椎（Thoracic Spine，T1-T12）</strong>是脊柱的中段，连接着肋骨。胸椎活动度是指胸椎在屈曲、伸展、旋转和侧屈方向上的活动范围。</p>
+<p><strong>为什么你的计划里有胸椎活动训练：</strong></p><ul>
+<li>长期驼背→胸椎被锁在过度后凸的位置→活动度下降→僵硬</li>
+<li>胸椎僵硬→肩胛骨无法在正常的胸廓上滑动→肩胛不稳→上肢发力模式异常</li>
+<li>胸椎僵硬→腰椎和颈椎被迫代偿更多的活动→下背痛+颈部问题加重</li></ul>
+<p><strong>你的胸椎活动练习：</strong>猫牛式（屈伸）、穿针引线（旋转）、胸椎伸展（伸展）——覆盖胸椎的全部活动维度。</p>` },
+    { q:'21. 为什么胸椎僵硬会导致体态问题？',
+      a:`<p>连锁反应：<strong>胸椎僵硬（后凸）→</strong>为了保持视线水平，颈椎被迫过度伸展（头前伸）→同时肩胛骨无法在僵硬的胸廓上正常后缩→肩胛骨前移外展→圆肩形成→上交叉综合征完全建立。</p>
+<p>所以改善体态不能只做肩部训练，<strong>胸椎活动度是根源之一</strong>。</p>` },
+    { q:'22. 反向平板支撑为什么会让后脑勺不舒服？',
+      a:`<p><strong>原因：</strong>反向平板支撑面部朝上→这个姿势需要颈部屈肌保持头部稳定。如果你的深层颈屈肌较弱（头前伸者通常如此），身体会"借用"枕下肌和胸锁乳突肌来代偿→枕下肌紧张→后脑勺不适。另外如果下巴上抬（朝向天花板）、头部后仰，会直接压缩枕下区域。</p>
+<p><strong>解决：</strong>弯腿版（脚踩地膝盖弯曲）→下巴微收→视线看斜上方（不是正上方）→肩胛下压。</p>` },
+    { q:'23. 如何正确做反向平板支撑？',
+      a:`<p><strong>步骤：</strong></p><ol>
+<li>坐姿→手放臀部后方，手指朝前或朝外（朝外对肩更友好）</li><li>腿伸直→脚跟着地</li>
+<li>收紧臀部→顶髋→身体成一条直线</li><li>肩胛下压（沉肩，不耸肩到耳朵）</li><li>下巴微收，看斜上方</li></ol>
+<p><strong>关键检查点：</strong></p><ul>
+<li><span class="kf">髋不塌</span>——全程臀部收紧顶高</li>
+<li><span class="kf">肩下沉</span>——远离耳朵</li>
+<li><span class="kf">下巴收</span>——不是后仰</li>
+<li><span class="kf kf-bad">腰不酸</span>——腰酸=髋太低或核心没收紧</li></ul>
+<p><strong>降阶版：</strong>弯腿→脚踩地→膝盖弯曲90°→只要求髋部顶起到膝盖-髋-肩一条线。这个版本颈部压力更小。</p>` },
+    { q:'24. 什么是前推式俯卧撑？',
+      a:`<p><strong>前推式俯卧撑（Forward-Lean Push-Up）</strong>是在标准俯卧撑基础上，将身体重心前移，让肩膀超过手掌的变式。这个微小的前移把更多负荷转移到了前锯肌、上胸和肩部稳定肌群。</p>
+<p>在你的计划中，前锯肌是"翼状肩胛"和圆肩的对抗肌，对肩胛稳定至关重要。</p>` },
+    { q:'25. 前推式俯卧撑练哪里？',
+      a:`<p><strong>主要目标：前锯肌（Serratus Anterior）</strong></p>
+<p>前锯肌是位于腋下到肋骨侧面的扇形肌肉，功能是让肩胛骨前伸和上旋。被称为"拳击手肌肉"。</p>
+<p><strong>次要目标：</strong>上胸、三角肌前束、核心稳定肌群。</p>
+<p><strong>为什么你需要：</strong>圆肩者通常前锯肌薄弱→加强前锯肌→肩胛骨能正确贴合在胸廓上→肩胛稳定提升→胸肌发力感改善。</p>` },
+    { q:'26. 如何避免俯卧撑肩膀代偿？',
+      a:`<ul>
+<li><span class="highlight">不要耸肩：</span>推起时保持肩膀远离耳朵</li>
+<li><span class="highlight">肘角45°：</span>完全张开到90°会让肩关节前侧承受巨大压力</li>
+<li><span class="highlight">推到顶不要过度前伸肩胛：</span>（变成"翼状肩"姿势）这会拉扯你的肩关节前侧——可能正是你左肩被"扯到"的原因</li>
+<li><span class="highlight">不锁死肘关节：</span>推到顶留微弯，保持肌肉张力</li>
+<li><span class="highlight">离心控制：</span>下放时"掉下去"=肩关节承受冲击。慢下3秒完全避免</li></ul>` },
+    { q:'27. 如何避免练背时耸肩？',
+      a:`<p><strong>耸肩=上斜方肌过度活跃。</strong></p><ol>
+<li>动作前先"沉肩"：主动把肩膀往下、往后压</li>
+<li>想象"肩胛骨往屁股方向滑"——激活下斜方肌</li>
+<li>做Y-T时，如果肩膀往上缩=耸肩。正确感觉是肩胛骨往中间夹+微微下移</li>
+<li>对着镜子练或录像自查</li>
+<li>控制不住耸肩→减少活动范围→先做小幅度的肩胛收缩</li></ol>` },
+    { q:'28. 如何避免脖子参与发力？',
+      a:`<ul>
+<li><span class="highlight">背部动作：</span>眼睛看地面，下巴微收，不抬头</li>
+<li><span class="highlight">俯卧撑：</span>不要抬头看前方。头是脊柱的自然延伸</li>
+<li><span class="highlight">平板支撑：</span>看地面，头不后仰不低头</li>
+<li><span class="highlight">深蹲：</span>视线看前方地面约2米处，不前伸下巴</li></ul>` },
+    { q:'29. 如何正确热身？',
+      a:`<p><strong>热身三阶段：</strong></p>
+<p><strong>①轻度升温（1-2min）：</strong>原地踏步/慢跑→提升核心温度和血液流动。</p>
+<p><strong>②关节活动（2-3min）：</strong>肩绕环、髋转圈、脊柱猫牛式→润滑关节。</p>
+<p><strong>③专项激活（3-5min）：</strong>推力日→墙天使+肩胛收缩+胸肌激活+肩袖外旋。拉力日→俯身肩胛收缩+轻量Y-T。腿日→动态弓步+空气深蹲。你的热身已覆盖三阶段。</p>
+<p><strong>冷肌肉直接上强度=100%代偿+受伤风险。尤其你有肩伤史。</strong></p>` },
+    { q:'30. 动态热身与静态拉伸区别？',
+      a:`<table><tr><th>维度</th><th>动态热身</th><th>静态拉伸</th></tr>
+<tr><td>时机</td><td><span class="kf">训练前</span></td><td><span class="kf">训练后/休息日</span></td></tr>
+<tr><td>方式</td><td>关节在活动范围内反复移动</td><td>保持一个拉伸姿势15-60秒</td></tr>
+<tr><td>目的</td><td>升温+润滑+神经激活</td><td>恢复肌肉长度+放松+改善柔韧</td></tr>
+<tr><td>训练前做静态拉伸？</td><td colspan="2"><span class="kf kf-bad">不建议！</span>会暂时降低肌肉力量和爆发力。</td></tr></table>` },
+    { q:'31. 每个动作正确发力位置——完整表',
+      a:`<table><tr><th>动作</th><th>主要发力位置</th><th>你应该感觉到的</th></tr>
+<tr><td>靠墙俯卧撑</td><td>胸大肌+前三角肌+三头肌</td><td>胸肌拉伸-收缩节奏感（轻但应有）</td></tr>
+<tr><td>跪式俯卧撑</td><td>胸大肌（主导）+前三角肌+三头肌</td><td>下放时胸肌拉伸，推起时胸肌收缩酸胀</td></tr>
+<tr><td>前推式俯卧撑</td><td>前锯肌+上胸+核心</td><td>腋下侧方（前锯肌）酸</td></tr>
+<tr><td>靠墙单边推</td><td>胸大肌（单侧）+核心抗旋</td><td>单侧胸肌孤立发力</td></tr>
+<tr><td>俯卧超人</td><td>竖脊肌+臀大肌+中下斜方肌</td><td>整条后链从背到臀收紧</td></tr>
+<tr><td>俯身Y-T</td><td>下斜方(Y)+菱形肌(T)+后三角肌</td><td>肩胛骨之间酸胀，不是肩膀顶端</td></tr>
+<tr><td>反向平板</td><td>臀大肌+腘绳肌+中下斜方肌</td><td>后链整体紧张，臀收紧</td></tr>
+<tr><td>农夫行走</td><td>前臂+斜方肌+核心</td><td>全身稳定感</td></tr>
+<tr><td>深蹲</td><td>股四头肌+臀大肌</td><td>大腿前侧和臀部酸胀</td></tr>
+<tr><td>保加利亚分腿蹲</td><td>前腿股四+臀，后腿髋屈肌拉伸</td><td>前腿臀和腿酸</td></tr>
+<tr><td>臀桥</td><td>臀大肌（主导）+腘绳肌</td><td>臀部收紧酸胀，不是腰酸</td></tr>
+<tr><td>平板支撑</td><td>腹横肌+腹直肌+肩稳定肌</td><td>核心均匀收紧，腰不塌</td></tr>
+<tr><td>死虫式</td><td>腹横肌+腹斜肌</td><td>深层腹部收紧，腰贴地</td></tr>
+<tr><td>墙天使</td><td>肩袖+中下斜方肌+后三角肌</td><td>大臂后侧酸，肩稳定感</td></tr>
+<tr><td>下巴回收</td><td>深层颈屈肌</td><td>咽喉后方深处发力感</td></tr></table>` },
+    { q:'32. 每个动作常见错误——完整表',
+      a:`<table><tr><th>动作</th><th>常见错误</th><th>纠正</th></tr>
+<tr><td>靠墙/跪式俯卧撑</td><td>手太窄·肘夹紧·耸肩·头前伸·太快·肘锁死·推起过度前伸肩胛</td><td>手比肩宽·肘45°·沉肩·头中立·下3秒·肘微弯·推起肩胛不过度前伸</td></tr>
+<tr><td>前推式俯卧撑</td><td>前移太多塌腰</td><td>核心收紧，以不塌腰为限</td></tr>
+<tr><td>靠墙单边推</td><td>身体旋转过大</td><td>核心抗旋</td></tr>
+<tr><td>俯卧超人</td><td>抬头·过度挺腰·只抬手</td><td>眼看地·腹微收·同时抬胸+手脚</td></tr>
+<tr><td>俯身Y-T</td><td>耸肩·用手臂拉</td><td>沉肩·用肩胛启动</td></tr>
+<tr><td>反向平板</td><td>髋塌·耸肩·下巴后仰·腰酸</td><td>顶髋·沉肩·收下巴·弯腿降阶</td></tr>
+<tr><td>深蹲</td><td>膝内扣·背拱·重心前倾</td><td>膝朝脚尖·背平·重心在脚跟</td></tr>
+<tr><td>保加利亚分腿蹲</td><td>前膝内扣·前膝远超前脚尖</td><td>膝对脚尖·缩小步距</td></tr>
+<tr><td>臀桥</td><td>用腰顶不是臀·肩胛离地</td><td>先夹臀再顶髋</td></tr>
+<tr><td>平板支撑</td><td>塌腰·撅臀·头后仰·屏气</td><td>收腹臀→身体直线→看地面→呼吸</td></tr>
+<tr><td>死虫式</td><td>腰拱起·太快</td><td>腰贴地→放慢→先练单侧</td></tr></table>` },
+    { q:'33. 每个动作正确节奏',
+      a:`<p><strong>通用黄金节奏：离心（下放）3秒→底部暂停1秒→向心（推起）1-2秒 = "3-1-1"。</strong></p>
+<ul><li>俯卧撑类：下3秒→停1秒→推1秒</li>
+<li>深蹲：下3秒→停1秒→上2秒</li>
+<li>臀桥：顶1秒→停2秒→下3秒</li>
+<li>超人：起1秒→保持2秒→下2秒</li>
+<li>Y-T：抬1秒→保持1秒→下2秒</li>
+<li>平板/反向平板：静态保持（均匀呼吸）</li></ul>` },
+    { q:'34. 每个动作适合新手的简化版',
+      a:`<table><tr><th>标准动作</th><th>新手简化版</th><th>何时进阶</th></tr>
+<tr><td>靠墙俯卧撑</td><td>已经是最简版（身体越直立越简单）</td><td>标准完成4×15→跪式</td></tr>
+<tr><td>跪式俯卧撑</td><td>手撑高台（桌子）减少负荷</td><td>标准跪式4×10→尝试1-2个标准</td></tr>
+<tr><td>前推式俯卧撑</td><td>跪式前推→减少前移</td><td>跪式3×8→脚尖版</td></tr>
+<tr><td>靠墙单边推</td><td>减小转体幅度</td><td>控制力提升→增加幅度</td></tr>
+<tr><td>俯卧超人</td><td>只抬手（不加脚）→对侧单肢</td><td>完美4×12单肢→四肢同时</td></tr>
+<tr><td>俯身Y-T</td><td>俯卧在斜面上做</td><td>斜面完美→站姿俯身</td></tr>
+<tr><td>反向平板</td><td>弯腿版（脚踩地膝盖弯曲）</td><td>弯腿3×30秒→直腿15秒</td></tr>
+<tr><td>深蹲</td><td>手扶墙→浅蹲（半程）</td><td>无辅助→加深</td></tr>
+<tr><td>保加利亚分腿蹲</td><td>无负重→手扶墙→不架高后脚</td><td>平衡好→架椅子</td></tr>
+<tr><td>平板支撑</td><td>膝盖着地→20秒起步</td><td>膝盖版轻松→脚尖版</td></tr>
+<tr><td>死虫式</td><td>单侧手脚</td><td>单侧好→对侧同时</td></tr></table>` },
+    { q:'35. 每个动作正确呼吸方式',
+      a:`<p><strong>总原则：发力时呼气，还原时吸气。</strong></p>
+<ul><li><strong>俯卧撑：</strong>下放（吸气）→底部屏→推起（呼气）。想象把气"呼进"胸肌。</li>
+<li><strong>深蹲：</strong>下蹲（吸气，腹内压建立）→站起（呼气）</li>
+<li><strong>超人/Y-T：</strong>抬起（呼气）→保持（均匀呼吸）→放下（吸气）</li>
+<li><strong>臀桥：</strong>顶髋（呼气）→保持→下放（吸气）</li>
+<li><strong>平板/反向平板：</strong>全程均匀腹式呼吸，不屏气</li></ul>
+<p><strong>绝对不要全程屏气！</strong>只在最高强度短时发力时短暂屏息，居家自重训练不需要。</p>` },
+];
+
+// ======================== 术语词典 ========================
+const TERMS=[
+    { term:'肩胛骨',def:'Scapula，位于胸廓后侧上方的三角形扁骨，是上肢与躯干的连接"平台"。几乎所有上肢动作都以肩胛骨的稳定为基础。' },
+    { term:'肩胛稳定',def:'Scapular Stability，肩胛骨在运动中保持正确位置和受控运动的能力。肩胛不稳=上肢所有力量动作都打折。' },
+    { term:'胸椎',def:'Thoracic Spine（T1-T12），脊柱中段12节椎骨。连接肋骨，是躯干旋转和上肢活动的基础。胸椎僵硬=体态问题+肩功能障碍。' },
+    { term:'枕下肌',def:'Suboccipital Muscles，颅骨底部与上颈椎之间的4对深层小肌肉。含极高密度肌梭，头前伸导致它们持续紧张→后脑勺不适。' },
+    { term:'前锯肌',def:'Serratus Anterior，位于腋下到肋骨侧面的扇形肌肉。"拳击手肌肉"，负责肩胛骨前伸和上旋。圆肩者通常此肌薄弱。' },
+    { term:'后束三角肌',def:'Posterior Deltoid，三角肌的后1/3。功能是肩关节水平外展和外旋。对改善圆肩至关重要。Y-T训练中高度参与。' },
+    { term:'菱形肌',def:'Rhomboids，位于肩胛骨与脊柱之间的深层肌肉。肩胛骨后缩（往中间夹）。圆肩者菱形肌通常被拉长且薄弱。' },
+    { term:'斜方肌',def:'Trapezius，覆盖颈后到中背。分上（耸肩）、中（肩胛后缩）、下（肩胛下压+上旋）三部分。你需要加强中下，抑制上。' },
+    { term:'背阔肌',def:'Latissimus Dorsi，背部最大的肌肉。"倒三角"身材的塑造者。功能：肩伸展+内收+内旋。' },
+    { term:'核心稳定',def:'Core Stability，腹横肌+腹斜肌+腹直肌+多裂肌+盆底肌+膈肌协同工作维持脊柱中立。是所有四肢动作的"地基"。' },
+    { term:'后链',def:'Posterior Chain，身体后侧肌肉链条：竖脊肌→臀大肌→腘绳肌→腓肠肌。超人、臀桥、反向平板都在训练后链。' },
+    { term:'代偿',def:'Compensation，当目标肌肉无法有效发力时，身体"借用"其他肌肉完成动作。如：俯卧撑胸肌不发力→三头肌+前肩代偿。' },
+    { term:'肩胛下压',def:'Scapular Depression，肩胛骨向下（朝骨盆方向）移动。激活下斜方肌。与"耸肩"相反。' },
+    { term:'肩胛后缩',def:'Scapular Retraction，肩胛骨向脊柱中线靠拢。激活菱形肌+中斜方肌。' },
+    { term:'胸肌激活',def:'Chest Activation，通过特定低负荷练习（如双手互推）唤醒胸大肌的神经肌肉连接。解决"胸肌不会发力"问题的第一步。' },
+    { term:'肩袖',def:'Rotator Cuff，冈上肌+冈下肌+小圆肌+肩胛下肌的统称。稳定肩关节的"四根安全带"。你的左肩拉伤=肩袖力量不足。' },
+];
+
+// ======================== 综合指南 ========================
+const GUIDE_SECTIONS=[
+    { title:'🍽️ 饮食建议',
+      content:`<p>173cm/60kg，BMI≈20，偏瘦。增肌需要<strong>热量盈余：摄入>消耗。</strong></p>
+<p><strong>每日热量：</strong>维持约2000kcal。增肌目标：<strong>2300-2500kcal/天</strong>（+300-500kcal）。</p>
+<p><strong>三大营养素：</strong></p><ul>
+<li><strong>蛋白质：</strong>1.6-2.0g/kg = 每日96-120g。分4-5餐，每餐20-30g</li>
+<li><strong>碳水：</strong>占总热量50-55% = 约300-340g。米饭、全麦面包、燕麦、土豆、红薯</li>
+<li><strong>脂肪：</strong>占25-30% = 约65-80g。坚果、鸡蛋黄、橄榄油</li></ul>
+<p><strong>一天食谱示例：</strong></p><ul>
+<li>早餐：燕麦50g+牛奶250ml+鸡蛋2个+香蕉</li>
+<li>加餐：全麦面包2片+花生酱</li>
+<li>午餐：米饭200g+鸡胸肉150g+蔬菜</li>
+<li>训练后：牛奶250ml+香蕉/一片面包</li>
+<li>晚餐：米饭150g+鱼/瘦肉120g+蔬菜</li>
+<li>睡前（可选）：温牛奶/酸奶+少量坚果</li></ul>
+<p><strong>宿舍饮食tips：</strong>即食鸡胸肉、鸡蛋（煮蛋器几十元）、牛奶、全麦面包、坚果、即食燕麦——这些在宿舍完全可行。</p>` },
+    { title:'🥩 蛋白质摄入建议',
+      content:`<p><strong>每天96-120g，分4-5餐。</strong></p>
+<p><strong>优质蛋白来源：</strong></p><ul>
+<li>鸡胸肉（100g≈31g蛋白）</li><li>鸡蛋（1个≈6g蛋白，每天2-3个）</li>
+<li>牛奶（250ml≈8g蛋白）</li><li>鱼肉（100g≈20g蛋白）</li>
+<li>瘦猪肉/牛肉（100g≈26g蛋白）</li><li>豆腐（100g≈8g蛋白）</li>
+<li>蛋白粉（一勺≈25g蛋白，饮食不足时的补充）</li></ul>
+<p><strong>训练后30-60分钟内摄入蛋白质效果最佳</strong>，配合碳水（如香蕉+牛奶）吸收更好。不需要蛋白粉也能达标。</p>` },
+    { title:'😴 睡眠与恢复建议',
+      content:`<p><strong>增肌发生在恢复中，不是训练中。</strong>训练=破坏，睡眠+营养=重建。</p>
+<p><strong>目标：</strong>每晚7-9小时。18岁生长激素分泌旺盛，睡眠中生长激素脉冲最高=天然"增肌药"。</p>
+<p><strong>恢复要点：</strong></p><ul>
+<li>同一肌群间隔48小时（推力周一和周四之间隔了周二周三=够）</li>
+<li>周日完全休息很重要——不要跳过</li>
+<li>疲劳或肌肉极度酸痛→允许自己轻量或休息</li>
+<li>水分：每日至少2-2.5升水</li>
+<li>避免熬夜：熬夜→皮质醇升高→分解代谢→增肌效率下降</li></ul>` },
+    { title:'📈 3个月阶段性变化',
+      content:`<p><strong>第1个月：神经适应期</strong></p><ul>
+<li>体重可能微增0.5-1.5kg</li><li>动作模式建立，胸肌开始有发力感</li><li>圆肩有所改善，靠墙站姿时间延长</li><li>训练完成但某些动作"不够累"→正常，这是打基础阶段</li></ul>
+<p><strong>第2个月：肌肉增长启动期</strong></p><ul>
+<li>体重增1-2kg，胸/背有初步轮廓</li><li>俯卧撑胸肌有明确酸胀感，可尝试1-2个标准俯卧撑</li><li>驼背减轻，头前伸改善明显</li></ul>
+<p><strong>第3个月：可见变化期</strong></p><ul>
+<li>体重累计增3-5kg（目标63-65kg），体态明显改善</li><li>能完成标准俯卧撑若干，所有动作发力感清晰</li><li>侧面看耳-肩-髋接近一条线</li><li>可考虑增加负重或进阶动作</li></ul>
+<p><strong>18岁男性睾酮水平高，配合饮食和睡眠，变化可能更快。但绝不为了速度而牺牲动作质量。</strong></p>` },
+    { title:'🔰 新手注意事项',
+      content:`<ol>
+<li><span class="highlight">动作质量永远大于次数。</span>8个标准俯卧撑>30个代偿俯卧撑</li>
+<li><span class="highlight">酸痛不是唯一指标。</span>胸肌发力感比"第二天胸痛"更重要</li>
+<li><span class="highlight">关节疼痛≠肌肉酸痛。</span>关节痛（肩前刺痛、膝刺痛）立刻停止检查。肌肉酸胀=正常</li>
+<li><span class="highlight">允许退阶。</span>做不了标准组数→退到简化版，不要硬撑</li>
+<li><span class="highlight">热身不能跳过。</span>尤其你有肩伤史</li>
+<li><span class="highlight">周日休息日是训练的一部分</span>——不是"可选项"</li>
+<li><span class="highlight">推起俯卧撑时不要过度前伸肩胛</span>——这是你左肩被扯到的可能元凶</li>
+<li><span class="highlight">看电视/看书时每30分钟做5次下巴回收</span></li>
+</ol>` },
+    { title:'📋 每日训练后静态拉伸（通用）',
+      content:`<p>训练后做5-10分钟静态拉伸，每个动作保持20-30秒：</p><ul>
+<li><strong>胸肌拉伸：</strong>门框/墙角→手臂弯曲90°放门框→身体前移</li>
+<li><strong>背阔肌拉伸：</strong>手抓门框→臀部后坐</li>
+<li><strong>肩后拉伸：</strong>一侧手臂横过胸前→对侧手轻拉</li>
+<li><strong>股四头肌拉伸：</strong>站姿→单手扶墙→抓同侧脚踝拉向臀部</li>
+<li><strong>腘绳肌拉伸：</strong>坐姿→腿伸直→身体前倾</li>
+<li><strong>髋屈肌拉伸：</strong>弓步位→后腿膝盖着地→前移髋部</li>
+<li><strong>颈部拉伸：</strong>后颈+左右侧颈（拉力日已包含）</li>
+<li><strong>儿童式放松：</strong>跪姿→身体前趴→手臂伸展→额头贴地→深呼吸10次</li></ul>` },
+    { title:'✅ 每周训练结构一览',
+      content:`<table><tr><th>星期</th><th>主题</th><th>核心</th><th>约时长</th></tr>
+<tr><td>周一</td><td>推力日</td><td>热身+胸激活+肩袖激活+俯卧撑4动作</td><td>45-50min</td></tr>
+<tr><td>周二</td><td>拉力日</td><td>热身+背部4动作+颈部放松</td><td>40min</td></tr>
+<tr><td>周三</td><td>腿+核心</td><td>上肢热身+腿部热身+5动作</td><td>50min</td></tr>
+<tr><td>周四</td><td>推力日</td><td>同周一</td><td>45-50min</td></tr>
+<tr><td>周五</td><td>拉力日</td><td>同周二</td><td>40min</td></tr>
+<tr><td>周六</td><td>体态矫正</td><td>墙天使+Y-T+下巴回收+靠墙站+胸椎活动</td><td>35min</td></tr>
+<tr><td>周日</td><td>休息/拉伸</td><td>可选20分钟轻拉伸+散步</td><td>0-20min</td></tr></table>` },
+    { title:'🎯 最终完整总结',
+      content:`<div class="kb-card"><h4>你的完整路径图</h4>
+<p><strong>当前：</strong>18岁男性，173cm/60kg偏瘦，圆肩+驼背+头前伸，胸肌发力感弱，手臂代偿，练背后脑勺闷，左肩曾被扯到。</p>
+<p><strong>训练：</strong>每周6天训练+1天休息。周一四推力+周二五拉力+周三腿+周六体态矫正。热身统一→肩袖激活→胸肌激活→主训练→练后拉伸+颈部放松。</p>
+<p><strong>核心原则：</strong>①动作质量>数量 ②慢速离心(3秒) ③胸肌先激活再练 ④练背看地面 ⑤肩袖预康复 ⑥体态矫正是根基。</p>
+<p><strong>营养：</strong>2300-2500kcal/天，蛋白质96-120g，分4-5餐。</p>
+<p><strong>恢复：</strong>7-9h睡眠，周日休息，水2-2.5L。</p>
+<p><strong>3个月目标：</strong>63-65kg，胸背发力感清晰，体态改善明显，能做标准俯卧撑，肩伤恢复。</p></div>
+<div class="kb-card"><h4>最重要的三件事</h4>
+<p><strong>①体态改善是第一优先级。</strong>圆肩驼背不纠正=胸肌永远无法正确发力。</p>
+<p><strong>②学会"感觉"肌肉。</strong>增肌本质=神经肌肉连接+机械张力。</p>
+<p><strong>③坚持比强度重要。</strong>每周稳定6天，3个月后再回头看。相信过程。</p></div>
+<p style="text-align:center;color:var(--gold);margin-top:16px;font-weight:700;font-size:1.1em">🏋️ 坚持3个月，遇见全新的自己。</p>` },
+];
+
+// ======================== APP LOGIC ========================
+function getTodayIdx(){const d=new Date().getDay();if(d===0)return-1;return d-1}
+function weekKey(){const n=new Date();const m=new Date(n);m.setDate(n.getDate()-((n.getDay()+6)%7));return m.getFullYear()+'-'+(m.getMonth()+1)+'-'+m.getDate()}
+function sk(d){return 'wo3_'+d+'_'+weekKey()}
+function load(d){try{return JSON.parse(localStorage.getItem(sk(d))||'[]')}catch{return[]}}
+function save(d,a){localStorage.setItem(sk(d),JSON.stringify(a))}
+
+let cur=getTodayIdx();if(cur===-1)cur=0;
+let currentTab='training';
+
+function renderNav(){
+    const nav=document.getElementById('weekNav');
+    nav.innerHTML=DAYS.map((n,i)=>{
+        const rest=i===6;
+        const cls=(i===cur?' active':'')+(rest?' rest':'');
+        return '<button class="'+cls+'" data-day="'+i+'" '+(rest?'disabled':'')+'>'+n.split(' ')[0]+'</button>';
+    }).join('');
+    nav.querySelectorAll('button').forEach(b=>{
+        b.addEventListener('click',()=>{
+            const d=+b.dataset.day;if(d===6)return;
+            cur=d;renderNav();render();
+        });
+    });
+}
+
+function render(){
+    const c=document.getElementById('content');
+    if(currentTab==='training') renderTraining(c);
+    else if(currentTab==='dorm') renderDorm(c);
+    else if(currentTab==='injury') renderInjury(c);
+    else if(currentTab==='qa') renderQA(c);
+    else if(currentTab==='terms') renderTerms(c);
+    else if(currentTab==='guide') renderGuide(c);
+}
+
+function buildExerciseList(items,checked,keyPrefix){
+    let html='<ul class="exercise-list">';
+    items.forEach((ex,i)=>{
+        const k=keyPrefix+i,done=checked.includes(k);
+        html+='<li class="exercise-item'+(done?' done':'')+'" data-k="'+k+'"><div class="ex-left"><span class="ex-check">'+(done?'✓':'')+'</span><span class="ex-name">'+ex.name+'</span></div><span class="ex-info">'+ex.info+'</span></li>';
+        if(ex.tip)html+='<div style="font-size:0.78em;color:var(--muted);padding:0 10px 6px 42px">💡 '+ex.tip+'</div>';
+        if(ex.feel)html+='<div style="font-size:0.76em;color:var(--green);padding:0 10px 6px 42px">🎯 感受：'+ex.feel+'</div>';
+    });
+    html+='</ul>';
+    return html;
+}
+
+function renderTraining(c){
+    const plan=PLANS[cur];
+    if(!plan){c.innerHTML='<div class="section"><p style="text-align:center;color:var(--muted);font-size:1.1em">☀️ 周日 · 休息日</p><p style="text-align:center;color:var(--muted);font-size:0.9em">拉伸放松 · 散步 · 让身体恢复 · 可选20分钟轻拉伸</p><div class="tip-box good"><strong>✅ 休息是训练的一部分。</strong>肌肉在休息时生长。享受今天。</div><div class="tip-box info"><strong>💡 建议：</strong>今天可以做枕下肌按摩+下巴回收各2分钟，帮助体态矫正。</div></div>';return;}
+    const checked=load(cur);
+    const today=getTodayIdx();
+    const isToday=cur===today;
+    let html='';
+    // Warmup
+    html+='<div class="section"><h2><span class="badge b-warmup">热身</span> 训前热身（每日）</h2>';
+    html+=buildExerciseList(WARMUP_BASE,checked,'wb_');
+    html+='<div class="tip-box info"><strong>💡 肩伤预防：</strong>热身后加做<strong>弹力带肩外旋2×15/侧</strong>（无弹力带则手臂空画小圈）+<strong>跪姿肩胛俯卧撑2×10</strong>。详情见"肩伤康复"标签页。</div>';
+    html+='</div>';
+    // Leg warmup
+    if(plan.legWarmup){
+        html+='<div class="section"><h2><span class="badge b-legs">腿日</span> 周三额外热身</h2>';
+        html+=buildExerciseList(WARMUP_LEG,checked,'wl_');
+        html+='</div>';
+    }
+    // Chest activate
+    if(plan.chestActivate){
+        html+='<div class="section"><h2><span class="badge b-push">激活</span> 胸肌激活（练前必做）</h2>';
+        html+=buildExerciseList(CHEST_ACTIVATE,checked,'ca_');
+        html+='</div>';
+    }
+    // Main
+    html+='<div class="section"><h2><span class="badge '+plan.badge+'">'+plan.badgeText+'</span> '+plan.dayLabel+'</h2>';
+    html+='<div class="day-label">'+(isToday?'📍 今日训练':DAYS[cur])+'</div>';
+    html+=buildExerciseList(plan.exercises,checked,'e_');
+    html+='</div>';
+    // Extra
+    if(plan.extraSection){
+        html+='<div class="section"><h2><span class="badge b-posture">活动</span> '+plan.extraSection.title+'</h2>';
+        html+=buildExerciseList(plan.extraSection.items,checked,'es_');
+        html+='</div>';
+    }
+    // Post routine
+    if(plan.postRoutine){
+        html+='<div class="section"><h2><span class="badge b-info">放松</span> 练背后必做 · 颈部放松四步</h2>';
+        html+=buildExerciseList(plan.postRoutine,checked,'pr_');
+        html+='</div>';
+    }
+    // Tips
+    if(plan.tips){
+        plan.tips.forEach(t=>{html+='<div class="tip-box '+t.type+'">'+t.text+'</div>';});
+    }
+    c.innerHTML=html;
+    // Click handlers
+    c.querySelectorAll('.exercise-item').forEach(el=>{
+        el.addEventListener('click',()=>{
+            const k=el.dataset.k;
+            let arr=load(cur);
+            arr=arr.includes(k)?arr.filter(x=>x!==k):[...arr,k];
+            save(cur,arr);render();
+        });
+    });
+}
+
+function renderDorm(c){
+    let html='<div class="section dorm-section"><h2><span class="badge b-dorm">🏠 宿舍</span> 宿舍友好训练动作库</h2>';
+    html+='<p class="day-label">在宿舍/小空间可以做的补充训练。无需器械或只需弹力带+毛巾+水瓶。可加到拉力日或空闲日练习。</p>';
+    DORM_EXERCISES.forEach(cat=>{
+        html+='<div class="kb-card"><h4>'+cat.category+'</h4>';
+        cat.exercises.forEach(ex=>{
+            html+='<details><summary><strong>'+ex.name+'</strong> <span style="color:var(--muted);font-size:0.85em">'+ex.desc+'</span></summary><div class="inner"><p>'+ex.detail+'</p></div></details>';
+        });
+        html+='</div>';
+    });
+    html+='<div class="tip-box dorm"><strong>🏠 宿舍训练核心思路：</strong>弹力带（几十元投资）=几十个动作的可能性。毛巾+门=免费划船器。水瓶装满水=小哑铃。床=卧推凳。门框=引体向上杆。创造力是你的唯一限制。</div>';
+    html+='</div>';
+    c.innerHTML=html;
+}
+
+function renderInjury(c){
+    let html='<div class="section injury-section"><h2><span class="badge b-injury">🩹 肩伤</span> 左肩前中束拉伤 · 恢复与预防方案</h2>';
+    html+='<p class="day-label">你在做俯卧撑时左肩前中束缝隙被"扯到"。以下是完整分析+康复+预防方案。</p>';
+    SHOULDER_SECTIONS.forEach(s=>{
+        html+='<div class="kb-card"><h4>'+s.title+'</h4>'+s.content+'</div>';
+    });
+    html+='<div class="tip-box warn"><strong>⚠️ 重要提醒：</strong>以上信息基于常见训练伤害规律分析，不是医疗诊断。如果疼痛持续超过2周、夜间疼痛、或活动明显受限→请去看运动医学科/康复科医生。</div>';
+    html+='</div>';
+    c.innerHTML=html;
+}
+
+function renderQA(c){
+    let html='<div class="section"><h2><span class="badge b-gold">详解</span> 35个关键问题完全解答</h2>';
+    html+='<p class="day-label">点击问题展开。覆盖胸肌发力、练背、体态、动作、术语等全部内容。</p>';
+    QA_DATA.forEach((item,i)=>{
+        html+='<details><summary><strong>'+item.q+'</strong></summary><div class="inner">'+item.a+'</div></details>';
+    });
+    html+='</div>';
+    c.innerHTML=html;
+}
+
+function renderTerms(c){
+    let html='<div class="section"><h2><span class="badge b-info">词典</span> 专业术语解释</h2>';
+    html+='<p class="day-label">16个核心术语，中英文对照+白话解释。</p>';
+    TERMS.forEach(t=>{
+        html+='<div class="kb-card"><h4>'+t.term+'</h4><p>'+t.def+'</p></div>';
+    });
+    html+='</div>';
+    c.innerHTML=html;
+}
+
+function renderGuide(c){
+    let html='';
+    GUIDE_SECTIONS.forEach(s=>{
+        html+='<div class="section"><h2>'+s.title+'</h2>'+s.content+'</div>';
+    });
+    c.innerHTML=html;
+}
+
+// Init
+renderNav();
+render();
+
+// Tab switching
+document.getElementById('kbNav').querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click',()=>{
+        document.getElementById('kbNav').querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        currentTab=b.dataset.tab;
+        render();
+    });
+});
+
+// Service Worker
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('workout_sw.js').then(r=>console.log('SW ok',r.scope)).catch(()=>{});
+}
+</script>
+</body>
+</html>
